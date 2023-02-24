@@ -1,59 +1,34 @@
 import './App.css';
-import {useState} from 'react'
-import {Task} from './components/task'
+import {BrowserRouter as Router , Routes, Route, Link, } from 'react-router-dom';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+
+import { HomeComponent } from './components/home';
+import { RandomTaskComponent } from './components/randomTask';
+
 
 function App() {
-    const [todoList, setTodoList] = useState([]);
-    const [newTask, setNewTask] = useState("");
-
-    const changeHandler = (event) => {
-        setNewTask(event.target.value);
-    };
-
-    const newTaskHandler = (event) => {
-        const task = {
-            id: todoList.length === 0 ? 1 : todoList[todoList.length - 1].id + 1,
-            taskName: newTask,
-            completed: false
+    const client = new QueryClient({defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
         }
-        return setTodoList([...todoList, task])
-    };
-
-    const deleteTaskHandler = (id) => {
-        setTodoList(todoList.filter((task) => {
-            return task.id !== id;
-        }));
-    };
-
-    const completeTask = (id) => {
-        setTodoList(todoList.map((task) => {
-            if (task.id === id) {
-                return {...task, completed: true};
-            } else {
-                return task;
-            }
-        }))
-    };
+    }});
 
     return (
-        <div>
-            <div className="add-task">
-                <input type="text" onChange={changeHandler}></input>
-                <button onClick={newTaskHandler}>Add task</button>
-            </div>
-            <div className="list">
-                {todoList.map((task) => {
-                        return <Task
-                            taskName={task.taskName}
-                            id={task.id}
-                            completed={task.completed}
-                            deleteTaskHandler={deleteTaskHandler}
-                            completeTask={completeTask}
-                        />;
-                    }
-                )}
-            </div>
-        </div>
+        <>
+            <QueryClientProvider client={client}>
+                <Router>
+                
+                    <div className='navbar'>
+                        <Link to={"/"} > <button className='btn'>Home</button></Link>
+                        <Link to={"/random-task"}><button className='btn'>Random Task</button></Link>
+                    </div>
+                    <Routes>
+                        <Route path={"/"} element={<HomeComponent />} />
+                        <Route path={"/random-task"} element={<RandomTaskComponent />} />
+                    </Routes>
+                </Router>
+            </QueryClientProvider>
+        </>
     )
 }
 
