@@ -1,5 +1,5 @@
 import React from "react";
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {Task} from './task';
 
     
@@ -38,7 +38,7 @@ export const HomeComponent = () => {
     };
 
     return (
-        <div>
+        <div className="home">
             <div className="add-task">
                 <input type="text" onChange={changeHandler}></input>
                 <button onClick={newTaskHandler}>Add task</button>
